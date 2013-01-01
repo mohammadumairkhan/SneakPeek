@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:background="@drawable/back"
+  android:layout_height="fill_parent">
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="top|center"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/spicon" >
+
+    	</ImageView>
+
+         <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/hyeworthlogo" android:layout_gravity="bottom|center" android:layout_marginBottom="50dp"/>
+
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="133dp"
+        android:layout_height="112dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="-20dp"
+        android:src="@drawable/hyeworthpakistantext" />
+    
+
+ <!--    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="133dp"
+        android:layout_height="112dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/logo" />
+        
+           <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/rhuf" android:layout_gravity="bottom|center" android:layout_marginBottom="20dp"/>
+        
+        
+        --> 
+
+    <ProgressBar
+        android:id="@+id/progressBarOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_gravity="bottom|center" android:layout_marginBottom="160dp"/>
+ 
+    
+     <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/provider_fine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back"
+            android:minWidth="160sp"
+            android:onClick="useFineProvider"
+            android:text="@string/use_fine_provider"
+            android:visibility="invisible" />
+
+        <Button android:id="@+id/provider_both"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/use_both_providers"
+            android:background="@drawable/back"
+            android:minWidth="160sp"
+            android:onClick="useCoarseFineProviders" 
+            android:visibility="invisible"/>
+    </LinearLayout>
+    <TextView android:id="@+id/label_latlng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:text="@string/latlng" 
+        android:visibility="invisible"/>
+    
+    <TextView android:id="@+id/latlng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp" 
+        android:visibility="invisible"
+       />
+    
+    <TextView android:id="@+id/label_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:text="@string/address"
+        android:visibility="invisible" />
+    <TextView android:id="@+id/address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp" 
+        android:visibility="invisible"/>
+    
+    
+    
+    
+</FrameLayout>
