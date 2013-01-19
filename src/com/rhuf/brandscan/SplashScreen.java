@@ -1,23 +1,13 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Brandscan Application authored by RHUF Technologies
  */
 
 package com.rhuf.brandscan;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -41,29 +31,18 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
 public class SplashScreen extends FragmentActivity {
-    private TextView mLatLng;
-    private TextView mAddress;
-    private Button mFineProviderButton;
-    private Button mBothProviderButton;
+    /**
+     * Location Variables Start
+     */
+    
     private LocationManager mLocationManager;
     private Handler mHandler;
     private boolean mGeocoderAvailable;
-    private boolean mUseFine;
-    private boolean mUseBoth;
 
-    // Keys for maintaining UI states after rotation.
-    private static final String KEY_FINE = "use_fine";
-    private static final String KEY_BOTH = "use_both";
     // UI handler codes.
     private static final int UPDATE_ADDRESS = 1;
     private static final int UPDATE_LATLNG = 2;
@@ -71,53 +50,33 @@ public class SplashScreen extends FragmentActivity {
     private static final int TEN_SECONDS = 10000;
     private static final int TEN_METERS = 10;
     private static final int TWO_MINUTES = 1000 * 60 * 2;
+    /**
+     * Location Variables End
+     */
+    
     
     /**
-     * Brandscan Variables Start
+     * Splash Screen Variables Start
      */
     
 	AlertDialog.Builder dlgAlert;
 	AlertDialog.Builder fbAlert;
 	AlertDialog fbDialog;
-    final SplashScreen sPlashScreen = this; 
     ProgressBar progressBar;
     protected AppPrefs appPrefs;
     LoadViewTask loadviewtask;
     
     /**
-     * Brandscan Variables End
+     * Splash Screen Variables End
      */
-    
-    
     
 
-    /**
-     * This sample demonstrates how to incorporate location based services in your app and
-     * process location updates.  The app also shows how to convert lat/long coordinates to
-     * human-readable addresses.
-     */
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.splash);
-
-        // Restore apps state (if exists) after rotation.
-        if (savedInstanceState != null) {
-            mUseFine = savedInstanceState.getBoolean(KEY_FINE);
-            mUseBoth = savedInstanceState.getBoolean(KEY_BOTH);
-        } else {
-            mUseFine = false;
-            mUseBoth = false;
-        }
-        mLatLng = (TextView) findViewById(R.id.latlng);
-        mAddress = (TextView) findViewById(R.id.address);
-        // Receive location updates from the fine location provider (gps) only.
-        mFineProviderButton = (Button) findViewById(R.id.provider_fine);
-        // Receive location updates from both the fine (gps) and coarse (network) location
-        // providers.
-        mBothProviderButton = (Button) findViewById(R.id.provider_both);
 
         // The isPresent() helper method is only available on Gingerbread or above.
         mGeocoderAvailable =
@@ -128,26 +87,21 @@ public class SplashScreen extends FragmentActivity {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case UPDATE_ADDRESS:
-                        mAddress.setText((String) msg.obj);
                     	appPrefs.setCurrentAddress((String) msg.obj);
                         break;
                     case UPDATE_LATLNG:
-                        mLatLng.setText((String) msg.obj);
                         break;
                 }
             }
         };
         // Get a reference to the LocationManager object.
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        
-        
         appPrefs = new AppPrefs(getApplicationContext());
-          progressBar = (ProgressBar)findViewById(R.id.progressBarOne);
+        progressBar = (ProgressBar)findViewById(R.id.progressBarOne);
 	    loadviewtask  = new LoadViewTask();
-	    mBothProviderButton.performClick();
+	    getLocation();
 	    facebookDialog();
-	    fbDialog = fbAlert.create();
-	    
+	    fbDialog = fbAlert.create(); 
 	    isConnectedDialog();
 	    
 	    if(appPrefs.getFirstLaunch())
@@ -182,37 +136,21 @@ public class SplashScreen extends FragmentActivity {
         }      
     }
 
-    // Restores UI states after rotation.
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_FINE, mUseFine);
-        outState.putBoolean(KEY_BOTH, mUseBoth);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        setup();
+        getLocation();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        // Check if the GPS setting is currently enabled on the device.
-        // This verification should be done during onStart() because the system calls this method
-        // when the user returns to the activity, which ensures the desired location provider is
-        // enabled each time the activity resumes from the stopped state.
         LocationManager locationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!gpsEnabled) {
-            // Build an alert dialog here that requests that the user enable
-            // the location services, then when the user clicks the "OK" button,
-            // call enableLocationSettings()
-            //new EnableGpsDialogFragment().show(getSupportFragmentManager(), "enableGpsDialog");
+        	//GPS not enabled
         }
     }
 
@@ -231,42 +169,20 @@ public class SplashScreen extends FragmentActivity {
 
     // Set up fine and/or coarse location providers depending on whether the fine provider or
     // both providers button is pressed.
-    private void setup() {
-        Location gpsLocation = null;
-        Location networkLocation = null;
-        mLocationManager.removeUpdates(listener);
-        mLatLng.setText(R.string.unknown);
-        mAddress.setText(R.string.unknown);
-        // Get fine location updates only.
-        if (mUseFine) {
-//            mFineProviderButton.setBackgroundResource(R.drawable.button_active);
-//            mBothProviderButton.setBackgroundResource(R.drawable.button_inactive);
-            // Request updates from just the fine (gps) provider.
-            gpsLocation = requestUpdatesFromProvider(
-                    LocationManager.GPS_PROVIDER, R.string.not_support_gps);
-            // Update the UI immediately if a location is obtained.
-            if (gpsLocation != null) updateUILocation(gpsLocation);
-        } else if (mUseBoth) {
-            // Get coarse and fine location updates.
-//            mFineProviderButton.setBackgroundResource(R.drawable.button_inactive);
-//            mBothProviderButton.setBackgroundResource(R.drawable.button_active);
-            // Request updates from both fine (gps) and coarse (network) providers.
-            gpsLocation = requestUpdatesFromProvider(
-                    LocationManager.GPS_PROVIDER, R.string.not_support_gps);
-            networkLocation = requestUpdatesFromProvider(
-                    LocationManager.NETWORK_PROVIDER, R.string.not_support_network);
-
-            // If both providers return last known locations, compare the two and use the better
-            // one to update the UI.  If only one provider returns a location, use it.
-            if (gpsLocation != null && networkLocation != null) {
-                updateUILocation(getBetterLocation(gpsLocation, networkLocation));
-            } else if (gpsLocation != null) {
-                updateUILocation(gpsLocation);
-            } else if (networkLocation != null) {
-                updateUILocation(networkLocation);
-            }
-        }
-    }
+    private void getLocation() {
+	    Location gpsLocation = null;
+	    Location networkLocation = null;
+	    mLocationManager.removeUpdates(listener);
+	    gpsLocation = requestUpdatesFromProvider(LocationManager.GPS_PROVIDER);
+	    networkLocation = requestUpdatesFromProvider(LocationManager.NETWORK_PROVIDER, R.string.not_support_network);
+	    if (gpsLocation != null && networkLocation != null) {
+	        updateUILocation(getBetterLocation(gpsLocation, networkLocation));
+	    } else if (gpsLocation != null) {
+	        updateUILocation(gpsLocation);
+	    } else if (networkLocation != null) {
+	        updateUILocation(networkLocation);
+	    }
+	}
 
     /**
      * Method to register location updates with a desired location provider.  If the requested
@@ -289,19 +205,23 @@ public class SplashScreen extends FragmentActivity {
         }
         return location;
     }
-
-    // Callback method for the "fine provider" button.
-    public void useFineProvider(View v) {
-        mUseFine = true;
-        mUseBoth = false;
-        setup();
-    }
-
-    // Callback method for the "both providers" button.
-    public void useCoarseFineProviders(View v) {
-        mUseFine = false;
-        mUseBoth = true;
-        setup();
+    
+    /**
+     * Method to register location updates with a desired location provider.  If the requested
+     * provider is not available on the device.
+     *
+     * @param provider Name of the requested provider.
+     * @return A previously returned {@link android.location.Location} from the requested provider,
+     *         if exists.
+     */
+    
+    private Location requestUpdatesFromProvider(final String provider) {
+        Location location = null;
+        if (mLocationManager.isProviderEnabled(provider)) {
+            mLocationManager.requestLocationUpdates(provider, TEN_SECONDS, TEN_METERS, listener);
+            location = mLocationManager.getLastKnownLocation(provider);
+        } 
+        return location;
     }
 
     private void doReverseGeocoding(Location location) {
@@ -474,18 +394,18 @@ public class SplashScreen extends FragmentActivity {
 
 private void isConnectedDialog()
 {
-	  dlgAlert  = new AlertDialog.Builder(this);
-        dlgAlert.setMessage("Please Connect your device to the Internet and try again");
-        dlgAlert.setTitle("Brand Scan");
-        dlgAlert.setPositiveButton("OK", null);
-        dlgAlert.setCancelable(false);
-        dlgAlert.setPositiveButton("Ok",
-        	    new DialogInterface.OnClickListener() {
-        	        public void onClick(DialogInterface dialog, int which) {
-        	          dialog.dismiss();
-        	          finish();
-        	        }
-        	    });
+	dlgAlert  = new AlertDialog.Builder(this);
+    dlgAlert.setMessage("Please Connect your device to the Internet and try again");
+    dlgAlert.setTitle("Brand Scan");
+    dlgAlert.setPositiveButton("OK", null);
+    dlgAlert.setCancelable(false);
+    dlgAlert.setPositiveButton("Ok",
+    	    new DialogInterface.OnClickListener() {
+    	        public void onClick(DialogInterface dialog, int which) {
+    	          dialog.dismiss();
+    	          finish();
+    	        }
+    	    });
 }
 
 private void createSettingsOnFirstLaunch() {

@@ -12,6 +12,10 @@ public class Variables extends Application{
     
     public static final String SITE = "http://rhuftech.com/ci/index.php/api/site";
     
-	
+    public static final String PROD_URL = "http://rhuftech.com/ci/index.php/site/product_page/";
+    
+    public static final String HOME_URL = "http://www.brandscan.org/";
+    
+    
 
 }

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -30,11 +29,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -63,8 +57,6 @@ import com.rhuf.brandscan.Facebook.SessionEvents.AuthListener;
 import com.rhuf.brandscan.Facebook.SessionEvents.LogoutListener;
 import com.rhuf.brandscan.Facebook.SessionStore;
 import com.rhuf.brandscan.webview.WebViewActivity;
-
-import com.google.android.youtube.player.YouTubeIntents;
 
 
 public class SneakPeekActivity extends Activity {
@@ -209,7 +201,7 @@ public class SneakPeekActivity extends Activity {
             public void onClick(View v) {
               try{
             	  Intent intent = new Intent(getBaseContext(), WebViewActivity.class);
-                  intent.putExtra("URL", "http://www.brandscan.org/");
+                  intent.putExtra("URL", Variables.HOME_URL);
                   startActivity(intent);
               }
               catch(Exception e)
@@ -461,15 +453,15 @@ public class SneakPeekActivity extends Activity {
         return age;
     }
   
-    private void GetPlaces()
-    {
-    	
-    		//Execute Places Async Task
-    		/*new PlaceTask().execute();*/
-    }
-   
+//    private void GetPlaces()
+//    {
+//    	
+//    		//Execute Places Async Task
+//    		/*new PlaceTask().execute();*/
+//    }
+//   
     private void enterCode(){
-        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+//        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	   //get current date time with Calendar()
  	    cal = Calendar.getInstance();  
         alert  = new AlertDialog.Builder(this);
@@ -486,7 +478,7 @@ public class SneakPeekActivity extends Activity {
           // Do something with value!
           if(TextUtils.isEmpty(input.getText().toString()))
           {
-        	  Toast.makeText(getApplicationContext(), "Please enter a valid UPC Code", Toast.LENGTH_LONG);
+        	  Toast.makeText(getApplicationContext(), "Please enter a valid UPC Code", Toast.LENGTH_LONG).show();
           }else{
 		          upcCode = value.toString();
 		          new ScanTask().execute();
@@ -678,10 +670,10 @@ public class SneakPeekActivity extends Activity {
 						DB.createEntry(upcCode, message);
 						DB.close();
 						/*Intent i = new Intent(getBaseContext(), WebViewActivity.class);
-		    	        i.putExtra("URL", "http://rhuftech.com/ci/index.php/site/product_page/"+upcCode+"/email/"+appPrefs.getUseremail());
+		    	        i.putExtra("URL", Variables.PROD_URL + upcCode + "/email/" + appPrefs.getUseremail());
 		    	        startActivity(i);*/
 						
-						Uri uri = Uri.parse("http://rhuftech.com/ci/index.php/site/product_page/"+upcCode+"/email/"+appPrefs.getUseremail());
+						Uri uri = Uri.parse(Variables.PROD_URL + upcCode + "/email/" + appPrefs.getUseremail());
 					    Intent i = new Intent(Intent.ACTION_VIEW, uri);
 					    startActivity(i);
 						
