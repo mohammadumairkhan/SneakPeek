@@ -75,7 +75,7 @@ public class History extends ListActivity {
 						int position, long id) {
 				    // When clicked, show a toast with the TextView text
 					Intent i = new Intent(getBaseContext(), WebViewActivity.class);
-					i.putExtra("URL", "http://rhuftech.com/ci/index.php/site/product_page/"+UPC[position]+"/email/"+appPrefs.getUseremail());
+					i.putExtra("URL", Variables.PROD_URL + UPC[position]+"/email/"+appPrefs.getUseremail());
 	    	        startActivity(i);
 				    //launch a webview for the clicked product
 				}
